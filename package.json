@@ -1,0 +1,33 @@
+{
+  "name": "trabalho-delivery",
+  "version": "1.0.0",
+  "description": "Trabalho final da disciplina DS870",
+  "main": "index.js",
+  "repository": "https://github.com/fnakanishi/trabalhoDelivery.git",
+  "author": "fnakanishi <traca.tm@gmail.com>",
+  "contributors": [
+    "André Vitor Kuduavski <email@email.com>",
+    "Carlos Felipe Godinho Silva <cfelipe@ufpr.br>",
+    "Gleidison dos Santos Novais <email@email.com>",
+    "Guilherme Vinicius Valério <email@email.com>",
+    "Rafael Henrique Karam <email@email.com>"
+  ],
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "dev": "nodemon -r dotenv/config --transpile-only --ignore-watch node_modules src/index.ts",
+    "start": "node -r dotenv/config --transpile-only --ignore-watch node_modules src/index.ts"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv-safe": "^8.2.0",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "mysql2": "^2.2.5",
+    "sequelize": "^6.6.5",
+    "sequelize-cli": "^6.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.12"
+  }
+}
