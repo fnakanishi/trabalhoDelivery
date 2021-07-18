@@ -4,29 +4,19 @@ class Entrega extends Sequelize.Model {
 	static init(sequelize) {
 		super.init(
 			{
-				descricao: {
-					type: Sequelize.STRING,
-					allowNull: false
-				},
-				status: {
-					type: Sequelize.STRING,
-					allowNull: false
-				},
-				valor: {
-					type: Sequelize.FLOAT,
-					allowNull: true
-				}
+				descricao: Sequelize.STRING,
+				status: Sequelize.STRING,
+				valor: Sequelize.FLOAT
 			},
 			{
-				sequelize,
-				modelName: 'entrega'
+				sequelize
 			}
 		);
 	}
 
 	static associate(models) {
 		this.belongsTo(models.Cliente, { foreignKey: 'clienteId' });
-        this.belongsTo(models.Motoboy, { foreignKey: 'motoboyId' });
+		this.belongsTo(models.Motoboy, { foreignKey: 'motoboyId' });
 	}
 }
 

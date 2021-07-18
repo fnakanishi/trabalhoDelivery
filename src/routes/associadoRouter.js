@@ -3,10 +3,10 @@ const associadoRouter = express.Router();
 const associadosController = require('../controllers/associadosController');
 const auth = require('../middleware/auth');
 
-associadoRouter.get('/list', auth, associadosController.listAllAssociados);
-associadoRouter.get('/CNPJ/:cnpj', associadosController.searchByCNPJ);
-associadoRouter.get('/find/:id', auth, associadosController.searchById);
-associadoRouter.post('/create', auth, associadosController.newAssociado);
-associadoRouter.delete('/remove/:id', auth, associadosController.deleteAssociado);
+associadoRouter.get('/list', auth, associadosController.list);
+associadoRouter.get('/find/:cnpj', associadosController.getByCNPJ);
+associadoRouter.put('/edit', auth, associadosController.edit);
+associadoRouter.post('/create', auth, associadosController.add);
+associadoRouter.delete('/remove/:id', auth, associadosController.delete);
 
 module.exports = associadoRouter;

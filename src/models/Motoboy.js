@@ -4,26 +4,13 @@ class Motoboy extends Sequelize.Model {
 	static init(sequelize) {
 		super.init(
 			{
-				nome: {
-					type: Sequelize.STRING,
-					allowNull: false
-				},
-				cpf: {
-					type: Sequelize.STRING,
-					allowNull: false
-				},
-				senha: {
-					type: Sequelize.STRING,
-					allowNull: false
-				},
-				telefone: {
-					type: Sequelize.STRING,
-					allowNull: true
-				}
+				nome: Sequelize.STRING,
+				cpf: Sequelize.STRING,
+				senha: Sequelize.STRING,
+				telefone: Sequelize.STRING
 			},
 			{
-				sequelize,
-				modelName: 'motoboy'
+				sequelize
 			}
 		);
 	}

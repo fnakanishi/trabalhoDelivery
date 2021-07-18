@@ -4,26 +4,13 @@ class Associado extends Sequelize.Model {
 	static init(sequelize) {
 		super.init(
 			{
-				nomeEmpresa: {
-					type: Sequelize.STRING,
-					allowNull: false
-				},
-				cnpj: {
-					type: Sequelize.STRING,
-					allowNull: false
-				},
-				senha: {
-					type: Sequelize.STRING,
-					allowNull: false
-				},
-				endereco: {
-					type: Sequelize.STRING,
-					allowNull: true
-				}
+				nomeEmpresa: Sequelize.STRING,
+				cnpj: Sequelize.STRING,
+				senha: Sequelize.STRING,
+				endereco: Sequelize.STRING
 			},
 			{
-				sequelize,
-				modelName: 'associado'
+				sequelize
 			}
 		);
 	}

@@ -6,17 +6,15 @@
   "repository": "https://github.com/fnakanishi/trabalhoDelivery.git",
   "author": "fnakanishi <traca.tm@gmail.com>",
   "contributors": [
-    "André Vitor Kuduavski <email@email.com>",
+    "André Vitor Kuduavski <andre.kuduavski@ufpr.br>",
     "Carlos Felipe Godinho Silva <cfelipe@ufpr.br>",
-    "Gleidison dos Santos Novais <email@email.com>",
-    "Guilherme Vinicius Valério <email@email.com>",
-    "Rafael Henrique Karam <email@email.com>"
+    "Rafael Henrique Karam <rafaelkaram@ufpr.br>"
   ],
   "license": "MIT",
   "private": false,
   "scripts": {
-    "dev": "nodemon -r dotenv/config --transpile-only --ignore-watch node_modules src/index.ts",
-    "start": "node -r dotenv/config --transpile-only --ignore-watch node_modules src/index.ts"
+    "dev": "nodemon -r dotenv/config src/index.js",
+    "start": "node -r dotenv/config src/index.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

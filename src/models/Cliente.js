@@ -4,22 +4,12 @@ class Cliente extends Sequelize.Model {
 	static init(sequelize) {
 		super.init(
 			{
-				nomeEmpresa: {
-					type: Sequelize.STRING,
-					allowNull: false
-				},
-				cnpj: {
-					type: Sequelize.STRING,
-					allowNull: false
-				},
-				endereco: {
-					type: Sequelize.STRING,
-					allowNull: false
-				}
+				nomeEmpresa: Sequelize.STRING,
+				cnpj: Sequelize.STRING,
+				endereco: Sequelize.STRING,
 			},
 			{
-				sequelize,
-				modelName: 'cliente'
+				sequelize
 			}
 		);
 	}
