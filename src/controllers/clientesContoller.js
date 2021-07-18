@@ -1,26 +1,8 @@
-const Associado = require('../models/Associado');
+const Cliente = require('../models/Cliente');
+const Sequelize = require('sequelize');
 
-const passwordValidation = (password) => {
-  if (password.lenght < 8)
-    return 'Senha deve conter no mínimo 8 caracteres.';
-  else if (!password.match(/[a-zA-Z]/g))
-    return 'Senha deve conter no mínimo uma letra.';
-  else if (!password.match(/[0-9]+/))
-    return 'Senha deve conter no mínimo uma letra.';
-  else
-    return 'OK';
-}
-
-const generateToken = (id) => {
-  const token = jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: 82800,
-  });
-  console.log(token);
-  return token;
-}
-
-module.exports = {/*
-  async listAllAssociados(req, res) {
+module.exports = {
+  async listAllAssociados(req, res) {/*
     const associados = await Associado.findAll({
       order: [['id', 'ASC']],
     }).catch((error) => {

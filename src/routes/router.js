@@ -1,6 +1,6 @@
 const express = require('express');
 const associadoRouter = require('./associadoRouter');
-const mototboyRouter = require('./mototboyRouter');
+const mototboyRouter = require('./motoboyRouter');
 const clienteRouter = require('./clienteRouter');
 const entregaRouter = require('./entregaRouter');
 const router = express.Router();
