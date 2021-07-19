@@ -20,7 +20,7 @@ module.exports = {
 
     try {
       const motoboy = await Motoboy.findOne({
-        where: { cpf }
+        where: { cpf: cpf.replace(/\./g, '').replace(/-/g, '') }
       });
       if (!motoboy)
         return res.status(404).json({ msg: 'Usuário ou senha inválidos.' });
@@ -79,7 +79,7 @@ module.exports = {
         if (motoboy.nome || motoboy.cpf || motoboy.telefone) {
           if (motoboy.cpf) {
             const motoboyCPFExists = await Motoboy.findOne({
-              where: { cpf }
+              where: { cpf: cpf.replace(/\./g, '').replace(/-/g, '') }
             });
             if (motoboyCPFExists)
               return res.status(404).json({ msg: 'Já existe outro motoboy com o CPF informado.' });
@@ -106,7 +106,7 @@ module.exports = {
 
     //Procurar no BD por motoboy já existente
     const isMotoboyNew = await Motoboy.findOne({
-      where: { cpf },
+      where: { cpf: cpf.replace(/\./g, '').replace(/-/g, '') },
     });
 
     if (isMotoboyNew)
@@ -116,7 +116,7 @@ module.exports = {
       const hash = bcrypt.hashSync(senha, salt);
       const motoboy = await Motoboy.create({
         nome,
-        cpf,
+        cpf: cpf.replace(/\./g, '').replace(/-/g, ''),
         senha: hash,
         telefone,
       }).catch((error) => {

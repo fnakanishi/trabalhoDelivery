@@ -48,7 +48,11 @@ module.exports = {
             if (clienteCNPJExists !== clienteExists)
               return res.status(404).json({ msg: 'Já existe outro cliente com o CNPJ informado.' });
           }
-          await cliente.update(cliente, {
+          await cliente.update({
+            nomeEmpresa: cliente.nomeEmpresa,
+            cnpj: cliente.cnpj.replace(/\./g, '').replace(/-/g, '').replace(/\//g, ''),
+            endereco: cliente.endereco
+          }, {
             where: { id: clienteId },
           });
           return res
@@ -78,7 +82,7 @@ module.exports = {
     else {
       const cliente = await Cliente.create({
         nomeEmpresa,
-        cnpj,
+        cnpj: cnpj.replace(/\./g, '').replace(/-/g, '').replace(/\//g, ''),
         endereco,
       }).catch((error) => {
         res.status(500).json({ msg: 'Não foi possível inserir os dados.' });

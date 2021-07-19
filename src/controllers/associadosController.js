@@ -20,7 +20,7 @@ module.exports = {
 
     try {
       const associado = await Associado.findOne({
-        where: { cnpj }
+        where: { cnpj: cnpj.replace(/\./g, '').replace(/-/g, '').replace(/\//g, '') }
       });
       if (!associado)
         return res.status(404).json({ msg: 'Usuário ou senha inválidos.' });
@@ -77,7 +77,7 @@ module.exports = {
   },
 
   async edit(req, res) {
-    const { id, nomeEmpresa, cnpj, senha, endereco} = req.body;
+    const { id, nomeEmpresa, cnpj, senha, endereco } = req.body;
     // Verifica se existe associadoId na requisição
     // (se tiver quer dizer que é alteração do próprio associado, se não, é alteração da ACP)
     const associadoId = req.associadoId ? req.associadoId : id;
@@ -89,9 +89,9 @@ module.exports = {
         res.status(404).json({ msg: 'Associado não encontrado.' });
       else {
         if (nomeEmpresa || cnpj || endereco || senha) {
-          if (cnpj !== associadoExists.cnpj) {
+          if (cnpj.replace(/\./g, '').replace(/-/g, '').replace(/\//g, '') !== associadoExists.cnpj.replace(/\./g, '').replace(/-/g, '').replace(/\//g, '')) {
             const associadoCNPJExists = await Associado.findOne({
-              where: { cnpj }
+              where: { cnpj: cnpj.replace(/\./g, '').replace(/-/g, '').replace(/\//g, '') }
             });
             if (associadoCNPJExists)
               return res.status(404).json({ msg: 'Já existe outro associado com o CNPJ informado.' });
@@ -100,7 +100,7 @@ module.exports = {
           const hash = bcrypt.hashSync(associado.senha, salt);
           await associado.update({
             nomeEmpresa: nomeEmpresa ? nomeEmpresa : associadoExists.nomeEmpresa,
-            cnpj: cnpj ? cnpj : associadoExists.cnpj,
+            cnpj: cnpj ? cnpj.replace(/\./g, '').replace(/-/g, '').replace(/\//g, '') : associadoExists.cnpj.replace(/\./g, '').replace(/-/g, '').replace(/\//g, ''),
             senha: senha ? hash : associadoExists.senha,
             endereco: endereco ? endereco : associadoExists.endereco
           }, {
@@ -126,7 +126,7 @@ module.exports = {
 
     //Procurar no BD por associado já existente
     const isAssociadoNew = await Associado.findOne({
-      where: { cnpj },
+      where: { cnpj: cnpj.replace(/\./g, '').replace(/-/g, '').replace(/\//g, '') },
     });
 
     if (isAssociadoNew)
@@ -136,7 +136,7 @@ module.exports = {
       const hash = bcrypt.hashSync(senha, salt);
       const associado = await Associado.create({
         nomeEmpresa,
-        cnpj,
+        cnpj: cnpj.replace(/\./g, '').replace(/-/g, '').replace(/\//g, ''),
         senha: hash,
         endereco,
       }).catch((error) => {
