@@ -72,7 +72,7 @@ module.exports = {
   },
 
   async findByMotoboy(req, res) {
-    const motoboyId = req.params.motoboyId;
+    const motoboyId = req.motoboyId;
     const entregas = await Entrega.findAll({
       where: { motoboyId }
     }).catch((error) => {
