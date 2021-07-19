@@ -1,4 +1,4 @@
-const schema = require('../schema/associadoClienteSchema');
+const schema = require('../schema/associadoSchema');
 const cnpjValidator = require('./cnpjValidator');
 
 const validate = (req, res, next) => {
