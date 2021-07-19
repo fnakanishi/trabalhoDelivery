@@ -9,7 +9,7 @@ const validator = require('../middleware/validator/associadoClienteValidator');
 const motoboyValidator = require('../middleware/validator/motoboyValidator');
 
 // Login, Logout e acesso a dados
-router.post('/login', validator, associadosController.login);
+router.post('/login', associadosController.login);
 //router.get('/logout', auth, associadosController.logout);
 router.put('/edit', auth, validator, associadosController.edit);
 router.get('/', auth, associadosController.get);
