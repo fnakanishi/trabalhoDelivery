@@ -68,8 +68,8 @@ module.exports = {
   },
 
   async edit(req, res) {
-    const { nome, cpf, senha, telefone } = req.body;
-    const motoboyId = motoboy.id;
+    const { id, nome, cpf, senha, telefone } = req.body;
+    const motoboyId = id;
     if (!motoboyId) res.status(400).json({ msg: 'ID vazio.' });
     else {
       const motoboyExists = await Motoboy.findByPk(motoboyId);
@@ -77,7 +77,7 @@ module.exports = {
         res.status(404).json({ msg: 'Motoboy não encontrado.' });
       else {
         if (nome || cpf || telefone) {
-          if (cpf) {
+          if (cpf.replace(/\./g, '').replace(/-/g, '') !== motoboyExists.cpf) {
             const motoboyCPFExists = await Motoboy.findOne({
               where: { cpf: cpf.replace(/\./g, '').replace(/-/g, '') }
             });
