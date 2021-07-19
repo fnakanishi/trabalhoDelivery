@@ -1,12 +1,17 @@
 const express = require('express');
-const motoboyRouter = express.Router();
+const router = express.Router();
+const entregasController = require('../controllers/entregasController');
 const motoboysController = require('../controllers/motoboysController');
-const auth = require('../middleware/auth');
+const auth = require('../middleware/auth/authMotoboy');
+const validator = require('../middleware/validator/motoboyValidator');
 
-motoboyRouter.get('/list', auth, motoboysController.list);
-motoboyRouter.get('/find/:cpf', motoboysController.getByCPF);
-motoboyRouter.put('/edit', auth, motoboysController.edit);
-motoboyRouter.post('/create', auth, motoboysController.add);
-motoboyRouter.delete('/remove/:id', auth, motoboysController.delete);
+// Login
+router.post('/login', validator, motoboysController.login);
 
-module.exports = motoboyRouter;
+// Entregas
+router.get('/list-completed', auth, entregasController.findCompleted);
+router.get('/list-pending', auth, entregasController.findPending);
+router.get('/relatorio', auth, entregasController.relatorioFinMotoboy);
+router.put('/edit/:id', auth, entregasController.editMotoboy);
+
+module.exports = router;

@@ -14,6 +14,10 @@ class Associado extends Sequelize.Model {
 			}
 		);
 	}
+
+	static associate(models) {
+		this.hasMany(models.Entrega, { foreignKey: 'associadoId' });
+	}
 }
 
 module.exports = Associado;

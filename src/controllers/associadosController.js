@@ -1,8 +1,51 @@
 const Associado = require('../models/Associado');
 const Entrega = require('../models/Entrega');
-const { cnpjValidation, passwordValidation, generateToken } = require('./generalController');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
+
+const generateToken = (id) => {
+  const token = jwt.sign({ id }, process.env.JWT_ASSOCIADO_SECRET, {
+    expiresIn: 18000,
+  });
+  console.log(token);
+  return token;
+}
 
 module.exports = {
+  async login(req, res) {
+    const { cnpj, senha } = req.body;
+
+    if(!cnpj || !senha)
+      return res.status(400).json({ msg: 'Campos obrigatórios vazios.' });
+
+    try {
+      const associado = await Associado.findOne({
+        where: { cnpj }
+      });
+      if (!associado)
+        return res.status(404).json({ msg: 'Usuário ou senha inválidos.' });
+      else {
+        if (bcrypt.compareSync(senha, associado.senha)) {
+          const token = generateToken(associado.id);
+          return res.status(200).json({ msg: 'Autenticado com sucesso.', token });
+        }
+        else
+          return res.status(404).json({ msg: 'Usuário ou senha inválidos.' });
+      }
+    } catch (error) {
+      res.status(500).json(error);
+    }
+  },
+
+  async get(req, res) {
+    const associadoId = req.associadoId;
+    if (!associadoId) return res.status(403).json({ msg: 'Solicitação não autorizada.' });
+
+    const associado = await Associado.findByPk(associadoId);
+    if (associado) res.status(200).json({ associado });
+    res.status(404).json({ msg: 'Não foi possível encontrar o associado.' });
+  },
+
   async list(req, res) {
     const associados = await Associado.findAll({
       order: [['id', 'ASC']],
@@ -34,26 +77,33 @@ module.exports = {
   },
 
   async edit(req, res) {
-    const associado = req.body;
-    const associadoId = associado.id;
+    const { id, nomeEmpresa, cnpj, senha, endereco} = req.body;
+    // Verifica se existe associadoId na requisição
+    // (se tiver quer dizer que é alteração do próprio associado, se não, é alteração da ACP)
+    const associadoId = req.associadoId ? req.associadoId : id;
+
     if (!associadoId) res.status(400).json({ msg: 'ID vazio.' });
     else {
       const associadoExists = await Associado.findByPk(associadoId);
       if (!associadoExists)
         res.status(404).json({ msg: 'Associado não encontrado.' });
       else {
-        if (associado.nomeEmpresa || associado.cnpj || associado.endereco) {
-          if (associado.cnpj) {
+        if (nomeEmpresa || cnpj || endereco || senha) {
+          if (cnpj !== associadoExists.cnpj) {
             const associadoCNPJExists = await Associado.findOne({
               where: { cnpj }
             });
             if (associadoCNPJExists)
               return res.status(404).json({ msg: 'Já existe outro associado com o CNPJ informado.' });
-            const cnpjValid = cnpjValidation(associado.cnpj);
-            if (cnpjValid !== 'OK')
-              return res.status(404).json({ msg: cnpjValid });
           }
-          await associado.update(associado, {
+          const salt = bcrypt.genSaltSync(12);
+          const hash = bcrypt.hashSync(associado.senha, salt);
+          await associado.update({
+            nomeEmpresa: nomeEmpresa ? nomeEmpresa : associadoExists.nomeEmpresa,
+            cnpj: cnpj ? cnpj : associadoExists.cnpj,
+            senha: senha ? hash : associadoExists.senha,
+            endereco: endereco ? endereco : associadoExists.endereco
+          }, {
             where: { id: associadoId },
           });
           return res
@@ -68,14 +118,11 @@ module.exports = {
   },
 
   async add(req, res) {
-    const { nome, cnpj, senha, endereco } = req.body;
-    if (!nome || !cnpj || !senha) {
+    const { nomeEmpresa, cnpj, senha, endereco } = req.body;
+    console.log(req.body);
+    if (!nomeEmpresa || !cnpj || !senha) {
       res.status(400).json({ msg: 'Dados obrigatórios não foram preenchidos.' });
     }
-
-    const cnpjValid = cnpjValidation(cnpj);
-    if (cnpjValid !== 'OK')
-      return res.status(400).json({ msg: cnpjValid });
 
     //Procurar no BD por associado já existente
     const isAssociadoNew = await Associado.findOne({
@@ -85,10 +132,6 @@ module.exports = {
     if (isAssociadoNew)
       res.status(403).json({ msg: 'Associado já foi cadastrado.' });
     else {
-      const passwordValid = passwordValidation(senha);
-      if (passwordValid !== 'OK')
-        return res.status(400).json({ msg: passwordValid });
-
       const salt = bcrypt.genSaltSync(12);
       const hash = bcrypt.hashSync(senha, salt);
       const associado = await Associado.create({

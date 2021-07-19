@@ -1,8 +1,42 @@
 const Motoboy = require('../models/Motoboy');
 const Entrega = require('../models/Entrega');
-const { cpfValidation, passwordValidation, generateToken } = require('./generalController');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
+
+const generateToken = (id) => {
+  const token = jwt.sign({ id }, process.env.JWT_MOTOBOY_SECRET, {
+    expiresIn: 18000,
+  });
+  console.log(token);
+  return token;
+}
 
 module.exports = {
+  async login(req, res) {
+    const { cpf, senha } = req.body;
+
+    if(!cpf || !senha)
+      return res.status(400).json({ msg: 'Campos obrigatórios vazios.' });
+
+    try {
+      const motoboy = await Motoboy.findOne({
+        where: { cpf }
+      });
+      if (!motoboy)
+        return res.status(404).json({ msg: 'Usuário ou senha inválidos.' });
+      else {
+        if (bcrypt.compareSync(senha, motoboy.senha)) {
+          const token = generateToken(motoboy.id);
+          return res.status(200).json({ msg: 'Autenticado com sucesso.', token });
+        }
+        else
+          return res.status(404).json({ msg: 'Usuário ou senha inválidos.' });
+      }
+    } catch (error) {
+      res.status(500).json(error);
+    }
+  },
+
   async list(req, res) {
     const motoboys = await Motoboy.findAll({
       order: [['id', 'ASC']],
@@ -18,7 +52,7 @@ module.exports = {
     else res.status(404).json({ msg: 'Não foi possível encontrar todos os motoboys.' });
   },
 
-  async getByCPF(req, res) {
+  async find(req, res) {
     const cpf = req.params.cpf;
     const motoboy = await Motoboy.findOne({
       where: { cpf }

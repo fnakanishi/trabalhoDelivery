@@ -1,5 +1,4 @@
 const Cliente = require('../models/Cliente');
-const Sequelize = require('sequelize');
 
 module.exports = {
   async list(req, res) {
@@ -48,7 +47,7 @@ module.exports = {
             });
             if (clienteCNPJExists)
               return res.status(404).json({ msg: 'Já existe outro cliente com o CNPJ informado.' });
-            const cnpjValid = cnpjValidation(cliente.cnpj);
+            const cnpjValid = cnpjValidator(cliente.cnpj);
             if (cnpjValid !== 'OK')
               return res.status(404).json({ msg: cnpjValid });
           }
@@ -72,7 +71,7 @@ module.exports = {
       res.status(400).json({ msg: 'Dados obrigatórios não foram preenchidos.' });
     }
 
-    const cnpjValid = cnpjValidation(cnpj);
+    const cnpjValid = cnpjValidator(cnpj);
     if (cnpjValid !== 'OK')
       return res.status(400).json({ msg: cnpjValid });
 
@@ -84,7 +83,7 @@ module.exports = {
     if (isClienteNew)
       res.status(403).json({ msg: 'Cliente já foi cadastrado.' });
     else {
-      const passwordValid = passwordValidation(senha);
+      const passwordValid = passwordValidator(senha);
       if (passwordValid !== 'OK')
         return res.status(400).json({ msg: passwordValid });
 
