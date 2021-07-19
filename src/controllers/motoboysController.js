@@ -83,9 +83,6 @@ module.exports = {
             });
             if (motoboyCPFExists)
               return res.status(404).json({ msg: 'Já existe outro motoboy com o CPF informado.' });
-            const cpfValid = cpfValidation(motoboy.cpf);
-            if (cpfValid !== 'OK')
-              return res.status(404).json({ msg: cpfValid });
           }
           await motoboy.update(motoboy, {
             where: { id: motoboyId },

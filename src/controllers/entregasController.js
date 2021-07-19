@@ -127,6 +127,7 @@ module.exports = {
         descricao,
         motoboyId,
         clienteId,
+        status: 'PENDENTE'
       }).catch((error) => {
         res.status(500).json({ msg: 'Não foi possível inserir os dados.' });
       });
