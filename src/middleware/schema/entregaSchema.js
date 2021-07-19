@@ -6,7 +6,7 @@ const schema = Joi.object().keys({
   clienteId: Joi.number().integer(),
   motoboyId: Joi.number().integer(),
   status: Joi.string(),
-  valor: Joi.number().float()
+  valor: Joi.number()
 });
 
 module.exports = schema;

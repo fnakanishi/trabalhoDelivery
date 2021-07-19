@@ -2,9 +2,9 @@ const schema = require('../schema/entregaSchema');
 
 const validate = (req, res, next) => {
   const path = req.route.path;
-  const { descricao, cienteId, motoboyId } = req.body;
+  const { descricao, clienteId, motoboyId } = req.body;
   if (path.endsWith('/create')) {
-    if (!descricao || !cienteId || !motoboyId)
+    if (!descricao || !clienteId || !motoboyId)
       return res.status(422).json({ error: 'Campos obrigatórios não preenchidos.' });
   }
   if (path.endsWith('/edit')) {
