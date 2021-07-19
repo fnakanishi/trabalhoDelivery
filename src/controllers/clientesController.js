@@ -63,8 +63,8 @@ module.exports = {
   },
 
   async add(req, res) {
-    const { nomeEmpresa, cnpj, senha, endereco } = req.body;
-    if (!nomeEmpresa || !cnpj || !senha) {
+    const { nomeEmpresa, cnpj, endereco } = req.body;
+    if (!nomeEmpresa || !cnpj) {
       res.status(400).json({ msg: 'Dados obrigatórios não foram preenchidos.' });
     }
 
@@ -76,17 +76,14 @@ module.exports = {
     if (isClienteNew)
       res.status(403).json({ msg: 'Cliente já foi cadastrado.' });
     else {
-      const salt = bcrypt.genSaltSync(12);
-      const hash = bcrypt.hashSync(senha, salt);
       const cliente = await Cliente.create({
         nomeEmpresa,
         cnpj,
-        senha: hash,
         endereco,
       }).catch((error) => {
         res.status(500).json({ msg: 'Não foi possível inserir os dados.' });
       });
-      if (appointment)
+      if (cliente)
         res.status(201).json({ msg: 'Novo cliente foi adicionado.' });
       else
         res.status(404).json({ msg: 'Não foi possível cadastrar novo cliente.' });
