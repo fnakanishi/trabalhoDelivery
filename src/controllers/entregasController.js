@@ -1,7 +1,7 @@
 const Cliente = require('../models/Cliente');
 const Entrega = require('../models/Entrega');
 const Motoboy = require('../models/Motoboy');
-const { Op } = require('sequelize');
+const sequelize = require('sequelize');
 
 module.exports = {
   async list(req, res) {
@@ -52,14 +52,14 @@ module.exports = {
       entregas = await Entrega.findAll({
         where: {
           motoboyId,
-          status: { [Op.not]: 'REALIZADA' }
+          status: { [sequelize.Op.not]: 'REALIZADA' }
         }
       }).catch((error) => {
         res.status(500).json({ msg: 'Falha na conexão.' });
       });
     else
       entregas = await Entrega.findAll({
-        where: { status: { [Op.not]: 'REALIZADA' } }
+        where: { status: { [sequelize.Op.not]: 'REALIZADA' } }
       }).catch((error) => {
         res.status(500).json({ msg: 'Falha na conexão.' });
       });
@@ -143,7 +143,7 @@ module.exports = {
       where: {
         id: entregaId,
         status: {
-          [Op.not]: 'REALIZADA'
+          [sequelize.Op.not]: 'REALIZADA'
         }
       },
     }).catch(async (error) => {
@@ -271,7 +271,7 @@ module.exports = {
         where: {
           id,
           motoboyId,
-          status: { [Op.not]: 'REALIZADA' }
+          status: { [sequelize.Op.not]: 'REALIZADA' }
         }
       }).catch((error) => {
         res.status(500).json({ msg: 'Falha na conexão.' });

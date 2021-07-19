@@ -5,13 +5,13 @@ const clientesController = require('../controllers/clientesController');
 const entregasController = require('../controllers/entregasController');
 const motoboysController = require('../controllers/motoboysController');
 const auth = require('../middleware/auth/authAssociado');
-const validator = require('../middleware/validator/associadoClienteValidator');
+const associadoValidator = require('../middleware/validator/associadoValidator');
+const clienteValidator = require('../middleware/validator/clienteValidator');
 const motoboyValidator = require('../middleware/validator/motoboyValidator');
 
 // Login, Logout e acesso a dados
 router.post('/login', associadosController.login);
-//router.get('/logout', auth, associadosController.logout);
-router.put('/edit', auth, validator, associadosController.edit);
+router.put('/edit', auth, associadoValidator, associadosController.edit);
 router.get('/', auth, associadosController.get);
 
 // Relatórios
@@ -21,8 +21,8 @@ router.get('/relatorio/financeiro', auth, entregasController.relatorioFin);
 // CRUD Clientes
 router.get('/cliente/list', auth, clientesController.list);
 router.get('/cliente/find/:cnpj', auth, clientesController.getByCNPJ);
-router.put('/cliente/edit', auth, validator, clientesController.edit);
-router.post('/cliente/create', auth, validator, clientesController.add);
+router.put('/cliente/edit', auth, clienteValidator, clientesController.edit);
+router.post('/cliente/create', auth, clienteValidator, clientesController.add);
 router.delete('/cliente/remove', auth, clientesController.delete);
 
 // CRUD Motoboy

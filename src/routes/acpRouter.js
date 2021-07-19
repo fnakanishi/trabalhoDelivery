@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const associadosController = require('../controllers/associadosController');
-const validator = require('../middleware/validator/associadoClienteValidator');
+const validator = require('../middleware/validator/associadoValidator');
 
 // CRUD Associados
 router.post('/login', associadosController.login);
