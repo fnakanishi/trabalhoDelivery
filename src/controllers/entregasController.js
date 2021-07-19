@@ -168,10 +168,10 @@ module.exports = {
     const totalEntregas = await Entrega.count({ where: { associadoId } });
 
     const top5ClientesIds = await Entrega.findAll({
-      atributes: [ 'clienteId', [ sequelize.fn('COUNT', 1), 'contagem' ] ],
+      atributes: ['clienteId', [sequelize.fn('COUNT', 1), 'contagem']],
       where: { associadoId },
       group: 'clienteId',
-      order: [ [sequelize.fn('COUNT', 1), 'DESC'] ],
+      order: [[sequelize.fn('COUNT', 1), 'DESC']],
       limit: 5
     });
 
@@ -185,12 +185,12 @@ module.exports = {
 
     const top5Clientes = [];
     const top5Motoboys = [];
-    for (let i = 0 ; i < top5ClientesIds.length ; i++) {
-      const cliente  = await Cliente.findByPk(top5ClientesIds[i].clienteId);
+    for (let i = 0; i < top5ClientesIds.length; i++) {
+      const cliente = await Cliente.findByPk(top5ClientesIds[i].clienteId);
       top5Clientes.push(cliente);
     }
-    for (let i = 0 ; i < top5MotoboysIds.length ; i++) {
-      const motoboy  = await Motoboy.findByPk(top5MotoboysIds[i].motoboyId);
+    for (let i = 0; i < top5MotoboysIds.length; i++) {
+      const motoboy = await Motoboy.findByPk(top5MotoboysIds[i].motoboyId);
       top5Motoboys.push(motoboy);
     }
 
@@ -206,12 +206,12 @@ module.exports = {
 
     const porcentagemRealizadas = qtdeEntregasTotais > 0 ? (qtdeEntregasRealizadas / qtdeEntregasTotais) * 100 : 100;
     const porcentagemPendentes = 100 - porcentagemRealizadas;
-    console.log({totalClientes, totalMotoboys, totalEntregas, top5Clientes, top5Motoboys, porcentagemRealizadas});
+    console.log({ totalClientes, totalMotoboys, totalEntregas, top5Clientes, top5Motoboys, porcentagemRealizadas });
     if (!totalClientes || !totalMotoboys ||
       !totalEntregas || !top5Clientes ||
       !top5Motoboys)
       return res.status(404).json({ msg: 'Não foi possível retornar uma resposta' });
-      
+
     return res.status(200).json({
       totalClientes,
       totalMotoboys,
@@ -243,9 +243,10 @@ module.exports = {
     });
   },
 
-  async relatorioFinMotoboy(res, req) {
+  async relatorioFinMotoboy(req, res) {
     const motoboyId = req.motoboyId;
-    if (!motoboyId) return res.status(403).json({ msg: 'Solicitação não autorizada.' });
+    console.log(motoboyId);
+    if (!motoboyId) { return res.status(403).json({ msg: 'Solicitação não autorizada.' }); }
 
     const valores = await Entrega.sum('valor', {
       where: {

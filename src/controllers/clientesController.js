@@ -1,4 +1,5 @@
 const Cliente = require('../models/Cliente');
+const Entrega = require('../models/Entrega')
 
 module.exports = {
   async list(req, res) {
@@ -96,19 +97,20 @@ module.exports = {
 
   async delete(req, res) {
     const clienteId = req.params.id;
+    console.log(clienteId);
     const deletedCliente = await Cliente.destroy({
       where: { id: clienteId },
     }).catch(async (error) => {
       const clienteHasEntrega = await Cliente.findOne({
-        where: { clienteId },
+        where: { id: clienteId },
       }).catch((error) => {
-        res.status(500).json({ msg: 'Falha na conexão.' });
+        res.status(500).json({ msg: 'Falha na conexão.',clienteId});
       });
       if (clienteHasEntrega) {
         const deletedEntregas = await Entrega.destroy({
           where: { clienteId }
         }).catch((error) => {
-          return res.status(500).json({ msg: 'Falha na conexão.' });
+          return res.status(500).json({ msg: 'Falha na conexão2.' });
         });
       } else return res.status(404).json({ msg: 'Erro ao excluir cliente.' });
     });

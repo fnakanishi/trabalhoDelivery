@@ -9,6 +9,6 @@ router.get('/list', associadosController.list);
 router.get('/find/:cnpj', associadosController.getByCNPJ);
 router.put('/edit', validator, associadosController.edit);
 router.post('/create', validator, associadosController.add);
-router.delete('/remove', associadosController.delete);
+router.delete('/remove/:id', associadosController.delete);
 
 module.exports = router;

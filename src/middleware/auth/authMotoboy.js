@@ -6,6 +6,7 @@ const verifyJWT = (req, res, next) => {
   jwt.verify(token, process.env.JWT_MOTOBOY_SECRET, (err, decoded) => {
     if (err)
       return res.status(401).json({ msg: 'Falha na autenticação do Token.' });
+      console.log(decoded.id);
     req.motoboyId = decoded.id;
     next();
   });
