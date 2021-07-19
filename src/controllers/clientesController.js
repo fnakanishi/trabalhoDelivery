@@ -45,11 +45,8 @@ module.exports = {
             const clienteCNPJExists = await Cliente.findOne({
               where: { cnpj }
             });
-            if (clienteCNPJExists)
+            if (clienteCNPJExists !== clienteExists)
               return res.status(404).json({ msg: 'Já existe outro cliente com o CNPJ informado.' });
-            const cnpjValid = cnpjValidator(cliente.cnpj);
-            if (cnpjValid !== 'OK')
-              return res.status(404).json({ msg: cnpjValid });
           }
           await cliente.update(cliente, {
             where: { id: clienteId },
@@ -71,10 +68,6 @@ module.exports = {
       res.status(400).json({ msg: 'Dados obrigatórios não foram preenchidos.' });
     }
 
-    const cnpjValid = cnpjValidator(cnpj);
-    if (cnpjValid !== 'OK')
-      return res.status(400).json({ msg: cnpjValid });
-
     //Procurar no BD por cliente já existente
     const isClienteNew = await Cliente.findOne({
       where: { cnpj },
@@ -83,10 +76,6 @@ module.exports = {
     if (isClienteNew)
       res.status(403).json({ msg: 'Cliente já foi cadastrado.' });
     else {
-      const passwordValid = passwordValidator(senha);
-      if (passwordValid !== 'OK')
-        return res.status(400).json({ msg: passwordValid });
-
       const salt = bcrypt.genSaltSync(12);
       const hash = bcrypt.hashSync(senha, salt);
       const cliente = await Cliente.create({
