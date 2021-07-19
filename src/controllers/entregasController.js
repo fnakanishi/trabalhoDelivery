@@ -112,9 +112,11 @@ module.exports = {
 
   async add(req, res) {
     const { descricao, motoboyId, clienteId } = req.body;
-    if (!descricao || !motoboyId || !clienteId) {
-      res.status(400).json({ msg: 'Dados obrigatórios não foram preenchidos.' });
-    }
+    const associadoId = req.associadoId;
+    if (!associadoId)
+      return res.status(403).json({ msg: 'É necessário fazer o login.' });
+    if (!descricao || !motoboyId || !clienteId)
+      return res.status(400).json({ msg: 'Dados obrigatórios não foram preenchidos.' });
 
     //Procurar no BD por motoboy e cliente
     const motoboyExists = await Motoboy.findByPk(motoboyId);
@@ -125,6 +127,7 @@ module.exports = {
     else {
       const entrega = await Entrega.create({
         descricao,
+        associadoId,
         motoboyId,
         clienteId,
         status: 'PENDENTE'
@@ -132,7 +135,7 @@ module.exports = {
         res.status(500).json({ msg: 'Não foi possível inserir os dados.' });
       });
       if (entrega)
-        res.status(201).json({ msg: 'Novo entrega foi adicionado.' });
+        res.status(201).json({ msg: 'Nova entrega foi adicionada.' });
       else
         res.status(404).json({ msg: 'Não foi possível cadastrar nova entrega.' });
     }

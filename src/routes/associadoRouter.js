@@ -7,6 +7,7 @@ const motoboysController = require('../controllers/motoboysController');
 const auth = require('../middleware/auth/authAssociado');
 const associadoValidator = require('../middleware/validator/associadoValidator');
 const clienteValidator = require('../middleware/validator/clienteValidator');
+const entregaValidator = require('../middleware/validator/entregaValidator');
 const motoboyValidator = require('../middleware/validator/motoboyValidator');
 
 // Login, Logout e acesso a dados
@@ -37,8 +38,8 @@ router.get('/entregas/list-entregas', auth, entregasController.list);
 router.get('/entregas/find-completed', auth, entregasController.findCompleted);
 router.get('/entregas/find-pending', auth, entregasController.findPending);
 router.get('/entregas/find/:motoboyId', auth, entregasController.findByMotoboy);
-router.put('/entregas/edit', auth, entregasController.edit);
-router.post('/entregas/create', auth, entregasController.add);
+router.put('/entregas/edit', auth, entregaValidator, entregasController.edit);
+router.post('/entregas/create', auth, entregaValidator, entregasController.add);
 router.delete('/entregas/remove/:id', auth, entregasController.delete);
 
 module.exports = router;
