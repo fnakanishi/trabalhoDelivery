@@ -164,20 +164,18 @@ module.exports = {
     const totalEntregas = await Entrega.count({ where: { id: associadoId } });
 
     const top5ClientesIds = await Entrega.findAll({
-      atributes: [
-        'clienteId',
-        [sequelize.fn('COUNT', sequelize.col('clienteId')), 'count'],
-      ],
+      atributes: {
+        include: [ [ sequelize.fn('COUNT', sequelize.col('clienteId')), 'count' ] ],
+      },
       where: { id: associadoId },
       group: 'clienteId',
       order: [ ['count', 'DESC'] ],
       limit: 5
     });
     const top5MotoboysIds = await Entrega.findAll({
-      atributes: [
-        'motoboyId',
-        [sequelize.fn('COUNT', sequelize.col('motoboyId')), 'count'],
-      ],
+      atributes: {
+        include: [ [ sequelize.fn('COUNT', sequelize.col('motoboyId')), 'count' ] ],
+      },
       where: { id: associadoId },
       group: 'motoboyId',
       order: [ ['count', 'DESC'] ],
