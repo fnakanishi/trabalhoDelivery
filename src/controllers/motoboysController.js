@@ -107,10 +107,6 @@ module.exports = {
       res.status(400).json({ msg: 'Dados obrigatórios não foram preenchidos.' });
     }
 
-    const cpfValid = cpfValidation(cpf);
-    if (cpfValid !== 'OK')
-      return res.status(400).json({ msg: cpfValid });
-
     //Procurar no BD por motoboy já existente
     const isMotoboyNew = await Motoboy.findOne({
       where: { cpf },
@@ -119,10 +115,6 @@ module.exports = {
     if (isMotoboyNew)
       res.status(403).json({ msg: 'Motoboy já foi cadastrado.' });
     else {
-      const passwordValid = passwordValidation(senha);
-      if (passwordValid !== 'OK')
-        return res.status(400).json({ msg: passwordValid });
-
       const salt = bcrypt.genSaltSync(12);
       const hash = bcrypt.hashSync(senha, salt);
       const motoboy = await Motoboy.create({

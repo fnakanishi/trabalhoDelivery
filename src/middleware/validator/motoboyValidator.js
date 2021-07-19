@@ -1,10 +1,11 @@
 const schema = require('../schema/motoboySchema');
 
 const cpfValidator = (cpf) => {
-  const numerosCPF = cpf.replace('.', '').replace('-', '');
+  const numerosCPF = cpf.replace(/\./g, '').replace(/-/g, '');
   const primeiro = parseInt(numerosCPF[0]);
   let somaDigitoA = 0;
   let somaDigitoB = 0;
+  let dif = false;
   for (let i = 0; i < 9; i++) {
     const digito = parseInt(numerosCPF[i]);
     somaDigitoA += digito * (10 - i);
