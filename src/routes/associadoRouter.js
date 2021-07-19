@@ -15,7 +15,7 @@ router.put('/edit', auth, associadoValidator, associadosController.edit);
 router.get('/', auth, associadosController.get);
 
 // Relatórios
-router.get('/relatorio/admnistrativo', auth, entregasController.relatorioAdm);
+router.get('/relatorio/administrativo', auth, entregasController.relatorioAdm);
 router.get('/relatorio/financeiro', auth, entregasController.relatorioFin);
 
 // CRUD Clientes

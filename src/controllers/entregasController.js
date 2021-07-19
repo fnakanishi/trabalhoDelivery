@@ -147,7 +147,7 @@ module.exports = {
         }
       },
     }).catch(async (error) => {
-        res.status(500).json({ msg: 'Falha na conexão.' });
+      res.status(500).json({ msg: 'Falha na conexão.' });
     });
 
     if (deletedEntrega != 0)
@@ -159,66 +159,63 @@ module.exports = {
     const associadoId = req.associadoId;
     if (!associadoId) return res.status(403).json({ msg: 'Solicitação não autorizada.' });
 
-    const totalClientes = await Cliente.count({ where: { id: associadoId } });
-    const totalMotoboys = await Motoboy.count({ where: { id: associadoId } });
-    const totalEntregas = await Entrega.count({ where: { id: associadoId } });
+    const totalClientes = await Cliente.count();
+    const totalMotoboys = await Motoboy.count();
+    const totalEntregas = await Entrega.count({ where: { associadoId } });
 
     const top5ClientesIds = await Entrega.findAll({
-      atributes: {
-        include: [ [ sequelize.fn('COUNT', sequelize.col('clienteId')), 'count' ] ],
-      },
-      where: { id: associadoId },
+      atributes: [ 'clienteId', [ sequelize.fn('COUNT', 1), 'contagem' ] ],
+      where: { associadoId },
       group: 'clienteId',
-      order: [ ['count', 'DESC'] ],
+      order: [ [sequelize.fn('COUNT', 1), 'DESC'] ],
       limit: 5
     });
+
     const top5MotoboysIds = await Entrega.findAll({
-      atributes: {
-        include: [ [ sequelize.fn('COUNT', sequelize.col('motoboyId')), 'count' ] ],
-      },
-      where: { id: associadoId },
+      atributes: ['motoboyId', [sequelize.fn('COUNT', 1), 'contagem']],
+      where: { associadoId },
       group: 'motoboyId',
-      order: [ ['count', 'DESC'] ],
+      order: [[sequelize.fn('COUNT', 1), 'DESC']],
       limit: 5
     });
+
     const top5Clientes = [];
     const top5Motoboys = [];
-    const top5ClientesIdsSorted = top5ClientesIds.sort((a, b) => a.count - b.count);
-    const top5MotoboysIdsSorted = top5MotoboysIds.sort((a, b) => a.count - b.count);
-    for (let i = 0 ; i < top5ClientesIdsSorted.length() ; i++) {
-      const cliente  = await Cliente.findByPk(top5ClientesIdsSorted[i]);
+    for (let i = 0 ; i < top5ClientesIds.length ; i++) {
+      const cliente  = await Cliente.findByPk(top5ClientesIds[i].clienteId);
       top5Clientes.push(cliente);
     }
-    for (let i = 0 ; i < top5MotoboysIdsSorted.length() ; i++) {
-      const motoboy  = await Motoboy.findByPk(top5MotoboysIdsSorted[i]);
+    for (let i = 0 ; i < top5MotoboysIds.length ; i++) {
+      const motoboy  = await Motoboy.findByPk(top5MotoboysIds[i].motoboyId);
       top5Motoboys.push(motoboy);
     }
+
     const qtdeEntregasRealizadas = await Entrega.count({
       where: {
-        id: associadoId,
+        associadoId,
         status: 'REALIZADA'
       }
     });
     const qtdeEntregasTotais = await Entrega.count({
-      where: { id: associadoId }
+      where: { associadoId }
     });
 
     const porcentagemRealizadas = qtdeEntregasTotais > 0 ? (qtdeEntregasRealizadas / qtdeEntregasTotais) * 100 : 100;
     const porcentagemPendentes = 100 - porcentagemRealizadas;
-
+    console.log({totalClientes, totalMotoboys, totalEntregas, top5Clientes, top5Motoboys, porcentagemRealizadas});
     if (!totalClientes || !totalMotoboys ||
-        !totalEntregas || !top5Clientes ||
-        !top5Motoboys || !porcentagemRealizadas)
+      !totalEntregas || !top5Clientes ||
+      !top5Motoboys)
       return res.status(404).json({ msg: 'Não foi possível retornar uma resposta' });
-
+      
     return res.status(200).json({
       totalClientes,
       totalMotoboys,
       totalEntregas,
       top5Clientes,
       top5Motoboys,
-      entregasRealizadas: `${ porcentagemRealizadas }%`,
-      entregasPendentes: `${ porcentagemPendentes }%`
+      entregasRealizadas: `${porcentagemRealizadas}%`,
+      entregasPendentes: `${porcentagemPendentes}%`
     });
   },
 
@@ -228,16 +225,17 @@ module.exports = {
 
     const valores = await Entrega.sum('valor', {
       where: {
-        id: associadoId,
+        associadoId,
         status: 'REALIZADA'
       }
     });
+    console.log(valores);
     if (!valores) return res.status(404).json({ msg: 'Não foi possível retornar uma resposta' });
 
     res.status(200).json({
-      valorTotal: `R$${ valores }`,
-      valorMotoboy: `R$${ valores * 0.7 }`,
-      valorAssociado: `R$${ valores * 0.3 }`,
+      valorTotal: `R$${valores}`,
+      valorMotoboy: `R$${valores * 0.7}`,
+      valorAssociado: `R$${valores * 0.3}`,
     });
   },
 
@@ -254,8 +252,8 @@ module.exports = {
     if (!valores) return res.status(404).json({ msg: 'Não foi possível retornar uma resposta' });
 
     res.status(200).json({
-      valorTotal: `R$${ valores }`,
-      valorComissao: `R$${ valores * 0.7 }`
+      valorTotal: `R$${valores}`,
+      valorComissao: `R$${valores * 0.7}`
     });
   },
 

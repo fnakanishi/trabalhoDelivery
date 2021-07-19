@@ -24,4 +24,4 @@ const cnpjValidator = (cnpj) => {
     return 'CNPJ inválido.';
 }
 
-modules.export = cnpjValidator;
+module.exports = cnpjValidator;
