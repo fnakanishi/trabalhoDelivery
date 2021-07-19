@@ -79,12 +79,12 @@ module.exports = {
         if (motoboy.nome || motoboy.cpf || motoboy.telefone) {
           if (motoboy.cpf) {
             const motoboyCPFExists = await Motoboy.findOne({
-              where: { cpf: cpf.replace(/\./g, '').replace(/-/g, '') }
+              where: { cpf: motoboy.cpf.replace(/\./g, '').replace(/-/g, '') }
             });
             if (motoboyCPFExists)
               return res.status(404).json({ msg: 'Já existe outro motoboy com o CPF informado.' });
           }
-          await motoboy.update(motoboy, {
+          await Motoboy.update(motoboy, {
             where: { id: motoboyId },
           });
           return res
