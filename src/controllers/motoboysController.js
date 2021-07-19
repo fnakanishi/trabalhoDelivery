@@ -68,7 +68,7 @@ module.exports = {
   },
 
   async edit(req, res) {
-    const motoboy = req.body;
+    const { nome, cpf, senha, telefone } = req.body;
     const motoboyId = motoboy.id;
     if (!motoboyId) res.status(400).json({ msg: 'ID vazio.' });
     else {
@@ -76,15 +76,22 @@ module.exports = {
       if (!motoboyExists)
         res.status(404).json({ msg: 'Motoboy não encontrado.' });
       else {
-        if (motoboy.nome || motoboy.cpf || motoboy.telefone) {
-          if (motoboy.cpf) {
+        if (nome || cpf || telefone) {
+          if (cpf) {
             const motoboyCPFExists = await Motoboy.findOne({
-              where: { cpf: motoboy.cpf.replace(/\./g, '').replace(/-/g, '') }
+              where: { cpf: cpf.replace(/\./g, '').replace(/-/g, '') }
             });
             if (motoboyCPFExists)
               return res.status(404).json({ msg: 'Já existe outro motoboy com o CPF informado.' });
           }
-          await Motoboy.update(motoboy, {
+          const salt = bcrypt.genSaltSync(12);
+          const hash = bcrypt.hashSync(senha, salt);
+          await Motoboy.update({
+            nome,
+            cpf: cpf.replace(/\./g, '').replace(/-/g, ''),
+            senha: hash,
+            telefone,
+          }, {
             where: { id: motoboyId },
           });
           return res
