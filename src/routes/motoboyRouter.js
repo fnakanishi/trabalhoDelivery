@@ -6,7 +6,7 @@ const auth = require('../middleware/auth/authMotoboy');
 const validator = require('../middleware/validator/motoboyValidator');
 
 // Login
-router.post('/login', validator, motoboysController.login);
+router.post('/login', motoboysController.login);
 
 // Entregas
 router.get('/list-completed', auth, entregasController.findCompleted);
