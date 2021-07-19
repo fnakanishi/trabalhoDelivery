@@ -12,6 +12,6 @@ router.post('/login', motoboysController.login);
 router.get('/list-completed', auth, entregasController.findCompleted);
 router.get('/list-pending', auth, entregasController.findPending);
 router.get('/relatorio', auth, entregasController.relatorioFinMotoboy);
-router.put('/edit/:id', auth, entregasController.editMotoboy);
+router.put('/edit', auth, entregasController.editMotoboy);
 
 module.exports = router;
