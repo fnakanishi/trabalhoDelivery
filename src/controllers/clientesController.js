@@ -75,7 +75,7 @@ module.exports = {
 
     //Procurar no BD por cliente já existente
     const isClienteNew = await Cliente.findOne({
-      where: { cnpj },
+      where: { cnpj: cnpj.replace(/\./g, '').replace(/-/g, '').replace(/\//g, '') },
     });
 
     if (isClienteNew)
